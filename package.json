@@ -1,0 +1,25 @@
+{
+  "name": "blockchain-asset-registry",
+  "version": "1.0.0",
+  "description": "Blockchain Asset Registry ERC",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SimpleICO/BAR.git"
+  },
+  "author": "netpoe",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SimpleICO/BAR/issues"
+  },
+  "homepage": "https://github.com/SimpleICO/BAR#readme",
+  "dependencies": {
+    "openzeppelin-solidity": "^1.11.0"
+  }
+}
