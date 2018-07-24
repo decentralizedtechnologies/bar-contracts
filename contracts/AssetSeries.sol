@@ -1,67 +1,102 @@
-pragma solidity ^0.4.25;
+pragma solidity ^0.4.24;
 
 import './Asset.sol';
+import './Migratable.sol';
 
 /**
  * @title AssetSeries
  * @dev 
  * an Asset contract is tracked via an AssetSeries contract
  */
-contract AssetSeries {
+contract AssetSeries is Migratable {
 
-    /**
-     * creator
-     * @var indicates the creator of this AssetSeries contract.
-     * eg. a caps factory. Each cap is an Asset contract linked to this AssetSeries
-     */
-    address public creator;
+    Asset asset;
 
-    /**
-     * series
-     * @var indicates the supply of the number of Asset contracts linked to this series
-     * 0 means unlimited supply
-     */
-    uint256 public series;
+    mapping (address => mapping (uint256 => Series)) internal series;
+    mapping (address => uint256[]) internal seriesByCreator;
 
-    /**
-     * currentAssetNumber
-     * @var 
-     * 
-     */
-    uint256 public currentAssetNumber;
+    uint256 public currentSeries = 0;
 
-    /**
-     * assets
-     * @var Asset contracts to be linked.
-     */
-    mapping (adress => Asset) public assets;
-
-    /**
-     * 
-     */
-    constructor(uint256 _series) public {
-
-        require(_series >= 0);
-
-        series = _series;
-        currentAssetNumber = 0;
+    struct Series {
+        uint256 id;
+        uint256 limit;
+        string name;
+        string description;
+        address creator;
+        uint256[] items;
     }
 
-    /**
-     * createAsset Creates new Asset contract and increments the serial number
-     * @param  {[type]} ) public        returns (address Asset [description]
-     * @return {[type]}   [description]
-     */
-    function createAsset(uint256 passphrase) public returns (address Asset) {
+    
+    function initialize(Asset _asset) 
+    public 
+    isInitializer("AssetSeries", "0.0.1") {
+        
+        asset = Asset(_asset);
+        asset.setOwner();
 
-        currentAssetNumber = currentAssetNumber + 1;
-        require(currentAssetNumber <= series);
-
-        Asset asset = new Asset(passphrase, currentAssetNumber);
-
-        assets[asset] = asset;
-
-        return asset;
     }
 
+    function getAssetContract() public view returns (address) {
+        return address(asset);
+    }
+
+    function createSeries(
+        uint256 _limit,
+        string _name,
+        string _description) public {
+
+        require(_limit >= 0, 'Limit must be equal or greater than 0');
+
+        ++currentSeries;
+        series[msg.sender][currentSeries].id = currentSeries;
+        series[msg.sender][currentSeries].limit = _limit;
+        series[msg.sender][currentSeries].name = _name;
+        series[msg.sender][currentSeries].description = _description;
+        series[msg.sender][currentSeries].creator = msg.sender;
+
+        seriesByCreator[msg.sender].push(currentSeries);
+
+    }
+
+    function getSeriesByIdFromCreator(address _creator, uint256 seriesId) 
+    public 
+    view 
+    returns (
+    uint256 id,
+    uint256 limit,
+    string name,
+    string description,
+    address creator,
+    uint256[] items
+    ) {
+        require(series[_creator][seriesId].id > 0, 'Series does not exist for this creator address');
+
+        return (
+            series[_creator][seriesId].id,
+            series[_creator][seriesId].limit,
+            series[_creator][seriesId].name,
+            series[_creator][seriesId].description,
+            series[_creator][seriesId].creator,
+            series[_creator][seriesId].items
+            );
+    }
+
+    function getSeriesIdsFromAddress(address _creator) public view returns (uint256[]) {
+        return seriesByCreator[_creator];
+    }
+
+    function addAsset(uint256 seriesId) public {
+
+        require(series[msg.sender][seriesId].id > 0, 'Series does not exist for this creator address');
+        require(series[msg.sender][seriesId].limit <= asset.currentItemBySeriesId(seriesId), 'Cannot add more items to this series');
+
+        uint256 serialNumber = asset.create(seriesId);
+        series[msg.sender][seriesId].items.push(serialNumber);
+
+    }
+
+    function getMyAssetsBySeriesId(uint256 seriesId, address _creator) public view returns (uint256[]) {
+        require(series[_creator][seriesId].id > 0, 'Series does not exist for this creator address');
+        return series[_creator][seriesId].items;
+    }
 }

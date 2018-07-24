@@ -12,7 +12,27 @@
  *   },
  */
 
+require('babel-register')({
+  ignore: /node_modules\/(?!openzeppelin-solidity\/test\/helpers)/
+})
+require('babel-polyfill')
+
 module.exports = {
-  // See <http://truffleframework.com/docs/advanced/configuration>
-  // to customize your Truffle configuration!
-};
+    networks: {
+        local: {
+            host: "127.0.0.1",
+            port: 7545,
+            network_id: "*"
+        },
+        ropsten:  {
+            network_id: 3,
+            host: "localhost",
+            port:  8545,
+            gas:   21000
+        }
+    },
+    rpc: {
+        host: 'localhost',
+        post:8080
+    }
+}

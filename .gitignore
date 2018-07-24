@@ -1,1 +1,4 @@
 /node_modules
+.zos.session
+zos.local.json
+/build

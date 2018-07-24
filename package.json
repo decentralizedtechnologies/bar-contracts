@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "test"
+    "test": "mocha -r ts-node/register ./**/*.spec.ts"
   },
   "repository": {
     "type": "git",
@@ -21,5 +21,13 @@
   "homepage": "https://github.com/SimpleICO/BAR#readme",
   "dependencies": {
     "openzeppelin-solidity": "^1.11.0"
+  },
+  "devDependencies": {
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "chai-bignumber": "^2.0.2"
   }
 }
