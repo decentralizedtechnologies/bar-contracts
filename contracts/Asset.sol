@@ -20,11 +20,19 @@ contract Asset is Ownable {
         owners.push(msg.sender);
     }
 
+    /**
+     * Only the owner can transfer this Asset
+     * An Asset must be claimed to complete the ownership transfer
+     */
     function transfer(address _newOwner) public onlyOwner {
         pendingOwner = _newOwner;
         emit PendingOwnership(owner, pendingOwner);
     }
 
+    /**
+     * An asset can be claimed only if the owner has transfered the asset to the msg.sender
+     * The sender must claim ownership of the Asset
+     */
     function claim() public {
         require(msg.sender == pendingOwner, 'Asset cannot be accepted');
         transferOwnership(msg.sender);
