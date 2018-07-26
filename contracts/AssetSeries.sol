@@ -36,7 +36,7 @@ contract AssetSeries is Migratable {
 
     }
 
-    function getAssetContract() public view returns (address) {
+    function getAssetContractAddress() public view returns (address _asset) {
         return address(asset);
     }
 
@@ -95,7 +95,7 @@ contract AssetSeries is Migratable {
 
     }
 
-    function getMyAssetsBySeriesId(uint256 seriesId, address _creator) public view returns (uint256[]) {
+    function getAssetsBySeriesId(uint256 seriesId, address _creator) public view returns (uint256[]) {
         require(series[_creator][seriesId].id > 0, 'Series does not exist for this creator address');
         return series[_creator][seriesId].items;
     }
