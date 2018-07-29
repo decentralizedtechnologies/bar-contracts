@@ -1,6 +1,7 @@
 pragma solidity ^0.4.24;
 
 import 'node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol';
+import 'node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol';
 
 /**
  * @title Asset
@@ -8,6 +9,8 @@ import 'node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol';
  * an Asset contract is tracked via an AssetSeries contract
  */
 contract Asset is Ownable {
+
+    using SafeMath for uint256;
 
     address[] public owners;
     address public pendingOwner;
