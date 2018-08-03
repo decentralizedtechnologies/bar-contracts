@@ -15,10 +15,15 @@ contract AssetSeries {
     }
 
     address public issuer;
+
     uint256 public serialNumber;
+
     uint256 public limit;
+
     string public name;
+
     string public description;
+    
     Asset[] public assets;
 
     event CreatedAsset(Asset asset);

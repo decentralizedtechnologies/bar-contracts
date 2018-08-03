@@ -7,13 +7,12 @@ import 'node_modules/openzeppelin-solidity/contracts/ownership/Claimable.sol';
  * @dev The Asset contract has an owner who can transfer the ownership of the asset
  * an Asset contract is tracked via an AssetSeries contract
  */
-
 contract Asset {
 
     address public owner;
     
     address public pendingOwner;
-    
+
     mapping (address => mapping (address => bool)) internal allowed;
 
     event OwnershipRenounced(address indexed previousOwner);
