@@ -1,8 +1,0 @@
-{
-  "name": "bar",
-  "version": "0.0.5",
-  "contracts": {
-    "AssetSeries": "AssetSeries",
-    "Asset": "Asset"
-  }
-}
