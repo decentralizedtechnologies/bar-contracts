@@ -45,6 +45,9 @@ contract Asset {
         owner = msg.sender;
     }
     
+    /*
+    * @dev fallback function
+    */
     function() external {}
 
     /**

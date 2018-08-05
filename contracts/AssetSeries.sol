@@ -28,6 +28,13 @@ contract AssetSeries {
 
     event CreatedAsset(Asset asset);
 
+    /*
+    * @param _issuer the address creating the asset series
+    * @param _serialNumber the incremental serial number from the AssetSeriesRegistry N+1
+    * @param _limit The AssetSeries limit. 0 for unlimited series
+    * @param _name The name of the series
+    * @param _description The description field may be an IPFS hash with a JSON file
+    */
     constructor(
         address _issuer,
         uint256 _serialNumber,
@@ -43,7 +50,7 @@ contract AssetSeries {
     }
 
     /**
-     * Create a new Asset contract
+     * @dev Create a new Asset contract
      */
     function add() public onlyIssuer {
         require(assets.length <= limit, 'Cannot add more Asset contracts');
