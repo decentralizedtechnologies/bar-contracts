@@ -1,7 +1,5 @@
 pragma solidity ^0.4.24;
 
-import 'node_modules/openzeppelin-solidity/contracts/ownership/Claimable.sol';
-
 /**
  * @title Asset
  * @dev The Asset contract has an owner who can transfer the ownership of the asset
@@ -32,7 +30,7 @@ contract Asset {
     /**
     * @dev Modifier throws if called by any account other than the pendingOwner.
     */
-    modifier onlyPendingOwner() {
+    modifier onlyPendingOwner {
         require(msg.sender == pendingOwner);
         _;
     }
@@ -48,7 +46,7 @@ contract Asset {
     /*
     * @dev fallback function
     */
-    function() external {}
+    function() public {}
 
     /**
     * @dev Throws if called by any account other than the owner.

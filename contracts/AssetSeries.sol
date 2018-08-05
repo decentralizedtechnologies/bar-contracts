@@ -9,7 +9,7 @@ import './Asset.sol';
  */
 contract AssetSeries {
 
-    modifier onlyIssuer() {
+    modifier onlyIssuer {
         require(msg.sender == issuer);
         _;
     }
@@ -52,7 +52,7 @@ contract AssetSeries {
     /**
      * @dev Create a new Asset contract
      */
-    function add() public onlyIssuer {
+    function add() onlyIssuer public {
         require(assets.length <= limit, 'Cannot add more Asset contracts');
         Asset asset = new Asset();
         assets.push(asset);

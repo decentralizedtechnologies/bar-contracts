@@ -12,12 +12,12 @@ contract AssetTrade {
 
     using SafeMath for uint256;
 
-    modifier onlyOwner() {
-        require(msg.sender == asset.owner);
+    modifier onlyOwner {
+        require(msg.sender == asset.owner());
         _;
     }
     
-    modifier canBuy() {
+    modifier canBuy {
         require(state != State.Paused);
         require(price > 0, 'Asset must have a price in order to be purchased');
         require(msg.value > 0, 'Input value must be greater than 0');
@@ -45,7 +45,7 @@ contract AssetTrade {
     * After initialization, the owner MUST approve this contract to 
     * transfer the Asset ownership
     */
-    constructor(Asset _asset) public onlyOwner {
+    constructor(Asset _asset) public {
         asset = _asset;
     }
 
@@ -59,7 +59,7 @@ contract AssetTrade {
     /*
     * @dev Pause the sale temporarily. Call sell or sellTo to re-enable the sale
     */
-    function pause() public onlyOwner {
+    function pause() onlyOwner public {
         state = State.Paused;
     }
 
@@ -70,11 +70,11 @@ contract AssetTrade {
     * @param _price The price in WEI
     * @param _buyer The buyer address
     */
-    function sellTo(uint256 _price, address _buyer) public onlyOwner {
+    function sellTo(uint256 _price, address _buyer) onlyOwner public {
         require(_price > 0);
         require(_buyer != address(0));
 
-        state = State.SellingTo
+        state = State.SellingTo;
 
         price = _price;
         buyer = _buyer;
@@ -84,10 +84,10 @@ contract AssetTrade {
     * @dev Everyone can purchase the Asset
     * @param _price The Asset price in WEI
     */
-    function sell(uint256 _price) public onlyOwner {
+    function sell(uint256 _price) onlyOwner public {
         require(_price > 0);
 
-        state = State.OpenSale
+        state = State.OpenSale;
 
         buyer = address(0);
         price = _price;
@@ -121,7 +121,7 @@ contract AssetTrade {
     */
     function _processPurchase() internal {
         _processRemainder();
-        asset.owner.transfer(price);
+        asset.owner().transfer(price);
         asset.transferFrom(msg.sender);
         emit AssetPurchased(msg.sender, price);
         buyers.push(msg.sender);
