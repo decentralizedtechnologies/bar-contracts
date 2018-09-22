@@ -13,7 +13,7 @@ contract Asset {
 
     mapping (address => mapping (address => bool)) internal allowed;
 
-    event OwnershipRenounced(address indexed previousOwner);
+    event AssetDestroyed(address indexed lastOwner);
     event OwnershipTransferred(
         address indexed previousOwner,
         address indexed newOwner
@@ -78,9 +78,18 @@ contract Asset {
     * @dev Allows the pendingOwner address to finalize the transfer.
     */
     function claim() onlyPendingOwner public {
-        emit OwnershipTransferred(owner, pendingOwner);
         owner = pendingOwner;
         pendingOwner = address(0);
+        emit OwnershipTransferred(owner, pendingOwner);
+    }
+    
+    /**
+    * @dev The Asset is no longer active
+    */
+    function destroy() onlyOwner public {
+        selfdestruct(address(0));
+        address lastOwner = owner;
+        emit AssetDestroyed(lastOwner);
     }
 
     /**
