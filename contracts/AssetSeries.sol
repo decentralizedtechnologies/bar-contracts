@@ -1,32 +1,26 @@
 pragma solidity ^0.4.24;
 
-import './Asset.sol';
+import './SerialAsset.sol';
 
 /**
  * @title AssetSeries
- * @dev 
- * an Asset contract is tracked via an AssetSeries contract
+ * @dev a series of Asset contracts
  */
 contract AssetSeries {
 
-    modifier onlyIssuer {
+    modifier onlyIssuer() {
         require(msg.sender == issuer);
         _;
     }
 
     address public issuer;
-
     uint256 public serialNumber;
-
     uint256 public limit;
-
-    string public name;
-
+    uint256 public assetsCount = 0;
     string public description;
-    
-    Asset[] public assets;
+    mapping(uint256 => SerialAsset) public assetsBySerialNumber;
 
-    event CreatedAsset(Asset asset);
+    event CreatedAsset(SerialAsset indexed asset);
 
     /*
     * @param _issuer the address creating the asset series
@@ -39,23 +33,22 @@ contract AssetSeries {
         address _issuer,
         uint256 _serialNumber,
         uint256 _limit,
-        string _name,
         string _description) public {
-
         issuer = _issuer;
         serialNumber = _serialNumber;
         limit = _limit;
-        name = _name;
         description = _description;
     }
 
     /**
      * @dev Create a new Asset contract
      */
-    function add() onlyIssuer public {
-        require(assets.length <= limit, 'Cannot add more Asset contracts');
-        Asset asset = new Asset();
-        assets.push(asset);
+    function newAsset(string _description) onlyIssuer public returns (SerialAsset) {
+        require(assetsCount < limit, 'Cannot add more Asset contracts');
+        ++assetsCount;
+        SerialAsset asset = new SerialAsset(issuer, _description, this, assetsCount);
+        assetsBySerialNumber[assetsCount] = asset;
         emit CreatedAsset(asset);
+        return asset;
     }
 }

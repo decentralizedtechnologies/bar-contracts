@@ -8,12 +8,16 @@ pragma solidity ^0.4.24;
 contract Asset {
 
     address public owner;
-    
+    address public lastOwner;
     address public pendingOwner;
-
+    string public description;
     mapping (address => mapping (address => bool)) internal allowed;
 
     event AssetDestroyed(address indexed lastOwner);
+    event PendingTransfer(
+        address indexed owner,
+        address indexed pendingOwner
+    );
     event OwnershipTransferred(
         address indexed previousOwner,
         address indexed newOwner
@@ -36,19 +40,6 @@ contract Asset {
     }
 
     /**
-    * @dev The Asset constructor sets the original `owner` of the contract to the sender
-    * account.
-    */
-    constructor() public {
-        owner = msg.sender;
-    }
-    
-    /*
-    * @dev fallback function
-    */
-    function() public {}
-
-    /**
     * @dev Throws if called by any account other than the owner.
     */
     modifier onlyOwner() {
@@ -57,11 +48,26 @@ contract Asset {
     }
 
     /**
+    * @dev The Asset constructor sets the original `owner` of the contract to the sender
+    * account.
+    */
+    constructor(address _owner, string _description) public {
+        owner = _owner;
+        description = _description;
+    }
+    
+    /*
+    * @dev fallback function
+    */
+    function() public {}    
+
+    /**
     * @dev Allows the current owner to set the pendingOwner address.
     * @param newOwner The address to transfer ownership to.
     */
     function transfer(address newOwner) onlyOwner public {
         pendingOwner = newOwner;
+        emit PendingTransfer(owner, pendingOwner);
     }
     
     
@@ -87,9 +93,10 @@ contract Asset {
     * @dev The Asset is no longer active
     */
     function destroy() onlyOwner public {
-        selfdestruct(address(0));
-        address lastOwner = owner;
+        lastOwner = owner;
+        owner = address(0);
         emit AssetDestroyed(lastOwner);
+        selfdestruct(lastOwner);
     }
 
     /**

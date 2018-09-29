@@ -73,9 +73,7 @@ contract AssetTrade {
     function sellTo(uint256 _price, address _buyer) onlyOwner public {
         require(_price > 0);
         require(_buyer != address(0));
-
         state = State.SellingTo;
-
         price = _price;
         buyer = _buyer;
     }
@@ -86,9 +84,7 @@ contract AssetTrade {
     */
     function sell(uint256 _price) onlyOwner public {
         require(_price > 0);
-
         state = State.OpenSale;
-
         buyer = address(0);
         price = _price;
     }
@@ -136,12 +132,10 @@ contract AssetTrade {
     */
     function _processRemainder() internal {
         uint256 remainder = msg.value % price;
-
         if (remainder > 0) {
             msg.sender.transfer(remainder);
             emit ProcessedRemainder(remainder);
         }
-
         price.sub(remainder);
     }
 }

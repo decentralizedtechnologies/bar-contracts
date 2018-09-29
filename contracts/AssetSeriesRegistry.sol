@@ -9,23 +9,31 @@ import './AssetSeries.sol';
  */
 contract AssetSeriesRegistry {
 
-    event CreatedAssetSeries(AssetSeries assetSeries);
-
     uint256 public serialNumber = 0;
-    mapping (address => AssetSeries[]) public assetsSeriesByIssuer;
+    mapping (address => AssetSeries[]) public assetSeriesByIssuer;
+
+    event CreatedAssetSeries(AssetSeries indexed assetSeries);
 
     /**
      * Create a new AssetSeries contract
      */
-    function create(
+    function newAssetSeries(
     uint256 limit, 
-    string name, 
     string description) 
-    public {
+    public 
+    returns (AssetSeries) {
         address issuer = msg.sender;
         ++serialNumber;
-        AssetSeries assetSeries = new AssetSeries(issuer, serialNumber, limit, name, description);
-        assetsSeriesByIssuer[issuer].push(assetSeries);
+        AssetSeries assetSeries = new AssetSeries(issuer, serialNumber, limit, description);
+        assetSeriesByIssuer[issuer].push(assetSeries);
         emit CreatedAssetSeries(assetSeries);
+        return assetSeries;
+    }
+
+    /*
+    * @dev gets the length of the AssetSeries array of a given issuer
+    */
+    function getAssetSeriesCountByIssuer(address _issuer) public view returns (uint count) {
+        return assetSeriesByIssuer[_issuer].length;
     }
 }
