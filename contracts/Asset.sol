@@ -55,11 +55,11 @@ contract Asset {
         owner = _owner;
         description = _description;
     }
-    
+
     /*
     * @dev fallback function
     */
-    function() public {}    
+    function() public {}
 
     /**
     * @dev Allows the current owner to set the pendingOwner address.
@@ -69,8 +69,8 @@ contract Asset {
         pendingOwner = newOwner;
         emit PendingTransfer(owner, pendingOwner);
     }
-    
-    
+
+
     /**
     * @dev Allows an approved trustee to set the pendingOwner address.
     * @param newOwner The address to transfer ownership to.
@@ -78,6 +78,7 @@ contract Asset {
     function transferFrom(address newOwner) public {
         require(allowance(msg.sender));
         pendingOwner = newOwner;
+        emit PendingTransfer(owner, pendingOwner);
     }
 
     /**
@@ -88,7 +89,7 @@ contract Asset {
         pendingOwner = address(0);
         emit OwnershipTransferred(owner, pendingOwner);
     }
-    
+
     /**
     * @dev The Asset is no longer active
     */
@@ -108,7 +109,7 @@ contract Asset {
         emit Approval(msg.sender, _trustee);
         return true;
     }
-    
+
     /**
     * @dev Approve the passed address to transfer the Asset on behalf of msg.sender.
     * @param _trustee The address which will spend the funds.
