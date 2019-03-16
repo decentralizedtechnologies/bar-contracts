@@ -1,19 +1,20 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.2;
+
+import "./IAsset.sol";
 
 /**
  * @title Asset
  * @dev The Asset contract has an owner who can transfer the ownership of the asset
  * an Asset contract is tracked via an AssetSeries contract
  */
-contract Asset {
+contract Asset is IAsset {
 
     address public owner;
     address public lastOwner;
     address public pendingOwner;
-    string public description;
+    bytes32[] public data;
     mapping (address => mapping (address => bool)) internal allowed;
 
-    event AssetDestroyed(address indexed lastOwner);
     event PendingTransfer(
         address indexed owner,
         address indexed pendingOwner
@@ -29,6 +30,10 @@ contract Asset {
     event RemovedApproval(
         address indexed owner,
         address indexed trustee
+    );
+    event AppendedData(
+        address indexed owner,
+        bytes32 indexed data
     );
 
     /**
@@ -51,15 +56,24 @@ contract Asset {
     * @dev The Asset constructor sets the original `owner` of the contract to the sender
     * account.
     */
-    constructor(address _owner, string _description) public {
+    constructor(address _owner) public {
         owner = _owner;
-        description = _description;
     }
 
     /*
     * @dev fallback function
     */
-    function() public {}
+    function() external {}
+
+    /**
+    * @dev Add data to the _data array
+    * @param _data bytes32 data
+    */
+    function appendData(bytes32 _data) onlyOwner public returns (bool) {
+        data.push(_data);
+        emit AppendedData(owner, _data);
+        return true;
+    }
 
     /**
     * @dev Allows the current owner to set the pendingOwner address.
@@ -88,16 +102,6 @@ contract Asset {
         owner = pendingOwner;
         pendingOwner = address(0);
         emit OwnershipTransferred(owner, pendingOwner);
-    }
-
-    /**
-    * @dev The Asset is no longer active
-    */
-    function destroy() onlyOwner public {
-        lastOwner = owner;
-        owner = address(0);
-        emit AssetDestroyed(lastOwner);
-        selfdestruct(lastOwner);
     }
 
     /**

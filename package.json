@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/SimpleICO/BAR#readme",
   "dependencies": {
-    "openzeppelin-solidity": "^1.11.0"
+    "openzeppelin-solidity": "^2.2.0"
   },
   "devDependencies": {
     "babel-polyfill": "^6.26.0",
