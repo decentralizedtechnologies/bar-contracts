@@ -12,7 +12,7 @@ contract Asset is IAsset {
     address public owner;
     address public lastOwner;
     address public pendingOwner;
-    bytes32[] public data;
+    string[] public data;
     mapping (address => mapping (address => bool)) internal allowed;
 
     event PendingTransfer(
@@ -33,7 +33,7 @@ contract Asset is IAsset {
     );
     event AppendedData(
         address indexed owner,
-        bytes32 indexed data
+        string indexed data
     );
 
     /**
@@ -56,8 +56,9 @@ contract Asset is IAsset {
     * @dev The Asset constructor sets the original `owner` of the contract to the sender
     * account.
     */
-    constructor(address _owner) public {
-        owner = _owner;
+    constructor(string memory _data) public {
+        owner = msg.sender;
+        appendData(_data);
     }
 
     /*
@@ -67,9 +68,9 @@ contract Asset is IAsset {
 
     /**
     * @dev Add data to the _data array
-    * @param _data bytes32 data
+    * @param _data string data
     */
-    function appendData(bytes32 _data) onlyOwner public returns (bool) {
+    function appendData(string memory _data) onlyOwner public returns (bool) {
         data.push(_data);
         emit AppendedData(owner, _data);
         return true;

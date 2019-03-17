@@ -11,14 +11,14 @@ interface IAsset {
     event OwnershipTransferred( address indexed previousOwner, address indexed newOwner );
     event Approval( address indexed owner, address indexed trustee );
     event RemovedApproval( address indexed owner, address indexed trustee );
-    event AppendedData( address indexed owner, bytes32 indexed data );
+    event AppendedData( address indexed owner, string indexed data );
 
     /*
     * @dev fallback function
     */
     function() external;
 
-    function appendData(bytes32 _data) external returns (bool);
+    function appendData(string calldata _data) external returns (bool);
 
     /**
     * @dev Allows the current owner to set the pendingOwner address.

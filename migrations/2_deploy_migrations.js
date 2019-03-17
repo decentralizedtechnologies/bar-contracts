@@ -1,13 +1,5 @@
-var Asset = artifacts.require("../contracts/Asset.sol");
-var AssetTrade = artifacts.require("../contracts/AssetTrade.sol");
-var AssetSeries = artifacts.require("../contracts/AssetSeries.sol");
-var AssetRegistry = artifacts.require("../contracts/AssetRegistry.sol");
+var Asset = artifacts.require("Asset");
 
-const descriptionAsset  = 'Asset 1';
-
-module.exports = function (deployer, network, [wallet_1]) {
-  deployer.deploy(Asset, wallet_1, descriptionAsset);
-  // deployer.deploy(AssetTrade);
-  // deployer.deploy(AssetSeries);
-  // deployer.deploy(AssetRegistry);
+module.exports = function (deployer) {
+  deployer.deploy(Asset);
 }
