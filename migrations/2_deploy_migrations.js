@@ -1,5 +1,5 @@
-var Asset = artifacts.require("Asset");
+var OwnableAssetRegistry = artifacts.require("OwnableAssetRegistry");
 
 module.exports = function (deployer) {
-  deployer.deploy(Asset);
+  deployer.deploy(OwnableAssetRegistry);
 }
