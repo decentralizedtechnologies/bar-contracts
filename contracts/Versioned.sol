@@ -26,6 +26,14 @@ contract Versioned is IVersioned {
     * @param _data string data
     */
     function appendData(string memory _data) public returns (bool) {
+        return _appendData(_data);
+    }
+    
+    /**
+    * @dev Add data to the _data array
+    * @param _data string data
+    */
+    function _appendData(string memory _data) internal returns (bool) {
         data.push(_data);
         emit AppendedData(_data, getVersionIndex());
         return true;

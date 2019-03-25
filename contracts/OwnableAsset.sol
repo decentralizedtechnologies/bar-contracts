@@ -9,4 +9,11 @@ import "node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol";
  * blockchainassetregistry.com
  */
 contract OwnableAsset is Versioned, Ownable {
+    /**
+    * @dev Add data to the _data array
+    * @param _data string data
+    */
+    function appendData(string memory _data) public onlyOwner returns (bool) {
+        return _appendData(_data);
+    }
 }
