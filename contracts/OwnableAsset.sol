@@ -1,7 +1,7 @@
 pragma solidity ^0.5.2;
 
 import "./Versioned.sol";
-import "node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "./Ownable.sol";
 
 /**
  * @title OwnableAsset
@@ -9,6 +9,7 @@ import "node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol";
  * blockchainassetregistry.com
  */
 contract OwnableAsset is Versioned, Ownable {
+    
     /**
     * @dev Add data to the _data array
     * @param _data string data
