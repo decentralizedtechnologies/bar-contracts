@@ -102,7 +102,7 @@ contract Ownable {
     /**
     * @dev Allows the pendingOwner address to finalize the transfer.
     */
-    function claim() onlyPendingOwner public {
+    function claimOwnership() onlyPendingOwner public {
         owner = pendingOwner;
         owners.push(owner);
         pendingOwner = address(0);
