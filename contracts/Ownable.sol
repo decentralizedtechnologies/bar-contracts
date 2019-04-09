@@ -9,7 +9,7 @@ contract Ownable {
     /**
     * @dev The current owner of the contract
     */
-    address private _owner;
+    address payable private _owner;
     
     /**
     * @dev A list of the contract owners
@@ -21,7 +21,7 @@ contract Ownable {
     * The current owner must have transferred the contract to this address
     * The pending owner must claim the ownership
     */
-    address private _pendingOwner;
+    address payable private _pendingOwner;
 
     /**
     * @dev A list of addresses that are allowed to transfer 
@@ -68,21 +68,21 @@ contract Ownable {
     /**
      * @return the set asset owner
      */
-    function owner() public view returns (address owner) {
+    function owner() public view returns (address payable) {
         return _owner;
     }
     
     /**
      * @return the set asset owner
      */
-    function owners() public view returns (address[] owners) {
+    function owners() public view returns (address[] memory) {
         return _owners;
     }
     
     /**
      * @return the set asset pendingOwner
      */
-    function pendingOwner() public view returns (address pendingOwner) {
+    function pendingOwner() public view returns (address) {
         return _pendingOwner;
     }
 
@@ -102,21 +102,21 @@ contract Ownable {
 
     /**
     * @dev Allows the current owner to set the pendingOwner address.
-    * @param pendingOwner The address to transfer ownership to.
+    * @param pendingOwner_ The address to transfer ownership to.
     */
-    function transferOwnership(address pendingOwner) onlyOwner public {
-        _pendingOwner = pendingOwner;
+    function transferOwnership(address payable pendingOwner_) onlyOwner public {
+        _pendingOwner = pendingOwner_;
         emit PendingTransfer(_owner, _pendingOwner);
     }
 
 
     /**
     * @dev Allows an approved trustee to set the pendingOwner address.
-    * @param pendingOwner The address to transfer ownership to.
+    * @param pendingOwner_ The address to transfer ownership to.
     */
-    function transferOwnershipFrom(address pendingOwner) public {
+    function transferOwnershipFrom(address payable pendingOwner_) public {
         require(allowance(msg.sender));
-        _pendingOwner = pendingOwner;
+        _pendingOwner = pendingOwner_;
         emit PendingTransfer(_owner, _pendingOwner);
     }
 

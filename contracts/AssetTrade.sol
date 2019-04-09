@@ -1,7 +1,7 @@
 pragma solidity ^0.5.2;
 
 import 'node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol';
-import './Asset.sol';
+import './OwnableAsset.sol';
 
 /**
  * @title AssetTrade
@@ -14,12 +14,12 @@ contract AssetTrade {
     using SafeMath for uint256;
 
     modifier onlyOwner {
-        require(msg.sender == asset.owner());
+        require(msg.sender == _asset.owner());
         _;
     }
     
     modifier canBuy {
-        require(state != State.Paused);
+        require(_state != State.Paused);
         require(_price > 0, 'Asset must have a price in order to be purchased');
         require(msg.value > 0, 'Input value must be greater than 0');
         require(msg.value >= _price, 'Input value must be gte than price');
@@ -28,7 +28,7 @@ contract AssetTrade {
     
     State private _state;
 
-    Asset private asset;
+    OwnableAsset private _asset;
 
     uint256 private _price = 0;
     uint256[] private _priceHistory;
@@ -44,14 +44,14 @@ contract AssetTrade {
     * After initialization, the owner MUST approve this contract to 
     * transfer the Asset ownership
     */
-    constructor(Asset asset) public {
+    constructor(OwnableAsset asset) public {
         _asset = asset;
     }
 
     /*
     * @dev fallback function, processes a purchase
     */
-    function() public payable {
+    function() external payable {
         buy();
     }
 
@@ -65,21 +65,35 @@ contract AssetTrade {
     /**
      * @return the set asset price
      */
-    function price() public view returns (uint256 price) {
+    function price() public view returns (uint256) {
         return _price;
+    }
+    
+    /**
+     * @return the asset price history
+     */
+    function priceHistory() public view returns (uint256[] memory) {
+        return _priceHistory;
     }
     
     /**
      * @return the set asset buyer
      */
-    function buyer() public view returns (address buyer) {
+    function buyer() public view returns (address) {
         return _buyer;
+    }
+    
+    /**
+     * @return the set asset buyers
+     */
+    function buyers() public view returns (address[] memory) {
+        return _buyers;
     }
     
     /**
      * @return the set asset asset
      */
-    function asset() public view returns (address asset) {
+    function asset() public view returns (OwnableAsset) {
         return _asset;
     }
 
@@ -87,33 +101,33 @@ contract AssetTrade {
     * @dev Pause the sale temporarily. Call sell or sellTo to re-enable the sale
     */
     function pause() onlyOwner public {
-        state = State.Paused;
+        _state = State.Paused;
     }
 
     /*
     * @dev Sets a buyer address
     * This method works together with buyFrom
     * If the wallet has the buyer address, then call buyFrom
-    * @param price The price in WEI
-    * @param buyer The buyer address
+    * @param price_ The price in WEI
+    * @param buyer_ The buyer address
     */
-    function sellTo(uint256 price, address buyer) onlyOwner public {
-        require(price > 0);
-        require(buyer != address(0));
-        state = State.SellingTo;
-        _price = price;
-        _buyer = buyer;
+    function sellTo(uint256 price_, address buyer_) onlyOwner public {
+        require(price_ > 0);
+        require(buyer_ != address(0));
+        _state = State.SellingTo;
+        _price = price_;
+        _buyer = buyer_;
     }
 
     /*
     * @dev Everyone can purchase the Asset
-    * @param price The Asset price in WEI
+    * @param price_ The Asset price in WEI
     */
-    function sell(uint256 price) onlyOwner public {
-        require(price > 0);
-        state = State.OpenSale;
+    function sell(uint256 price_) onlyOwner public {
+        require(price_ > 0);
+        _state = State.OpenSale;
         _buyer = address(0);
-        _price = price;
+        _price = price_;
     }
 
     /*
@@ -122,7 +136,7 @@ contract AssetTrade {
     * When the sale is done, the buyer still needs to claim the Asset
     */
     function buyFrom() canBuy public payable {
-        require(state == State.SellingTo);
+        require(_state == State.SellingTo);
         require(_buyer == msg.sender);
         _processPurchase();
     }
@@ -132,7 +146,7 @@ contract AssetTrade {
     * by the current owner
     */
     function buy() canBuy public payable {
-        require(state == State.OpenSale);
+        require(_state == State.OpenSale);
         _processPurchase();
     }
 
@@ -144,11 +158,11 @@ contract AssetTrade {
     */
     function _processPurchase() internal {
         _processRemainder();
-        asset.owner().transfer(_price);
-        asset.transferOwnershipFrom(msg.sender);
+        _asset.owner().transfer(_price);
+        _asset.transferOwnershipFrom(msg.sender);
         emit AssetPurchased(msg.sender, _price);
         _buyers.push(msg.sender);
-        priceHistory.push(_price);
+        _priceHistory.push(_price);
         _price = 0;
         _buyer = address(0);
         pause();
