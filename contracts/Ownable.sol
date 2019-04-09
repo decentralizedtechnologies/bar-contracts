@@ -9,19 +9,19 @@ contract Ownable {
     /**
     * @dev The current owner of the contract
     */
-    address public owner;
+    address private _owner;
     
     /**
     * @dev A list of the contract owners
     */
-    address[] public owners;
+    address[] private _owners;
 
     /**
     * @dev The pending owner. 
     * The current owner must have transferred the contract to this address
     * The pending owner must claim the ownership
     */
-    address public pendingOwner;
+    address private _pendingOwner;
 
     /**
     * @dev A list of addresses that are allowed to transfer 
@@ -55,9 +55,9 @@ contract Ownable {
     * of the contract to the sender account.
     */
     constructor() public {
-        owner = msg.sender;
-        owners.push(owner);
-        emit OwnershipTransferred(address(0), owner);
+        _owner = msg.sender;
+        _owners.push(_owner);
+        emit OwnershipTransferred(address(0), _owner);
     }
 
     /*
@@ -66,75 +66,96 @@ contract Ownable {
     function() external {}
 
     /**
+     * @return the set asset owner
+     */
+    function owner() public view returns (address owner) {
+        return _owner;
+    }
+    
+    /**
+     * @return the set asset owner
+     */
+    function owners() public view returns (address[] owners) {
+        return _owners;
+    }
+    
+    /**
+     * @return the set asset pendingOwner
+     */
+    function pendingOwner() public view returns (address pendingOwner) {
+        return _pendingOwner;
+    }
+
+    /**
      * @return true if `msg.sender` is the owner of the contract.
      */
     function isOwner() public view returns (bool) {
-        return msg.sender == owner;
+        return msg.sender == _owner;
     }
     
     /**
      * @return true if `msg.sender` is the owner of the contract.
      */
     function isPendingOwner() public view returns (bool) {
-        return msg.sender == pendingOwner;
+        return msg.sender == _pendingOwner;
     }
 
     /**
     * @dev Allows the current owner to set the pendingOwner address.
-    * @param _pendingOwner The address to transfer ownership to.
+    * @param pendingOwner The address to transfer ownership to.
     */
-    function transferOwnership(address _pendingOwner) onlyOwner public {
-        pendingOwner = _pendingOwner;
-        emit PendingTransfer(owner, pendingOwner);
+    function transferOwnership(address pendingOwner) onlyOwner public {
+        _pendingOwner = pendingOwner;
+        emit PendingTransfer(_owner, _pendingOwner);
     }
 
 
     /**
     * @dev Allows an approved trustee to set the pendingOwner address.
-    * @param _pendingOwner The address to transfer ownership to.
+    * @param pendingOwner The address to transfer ownership to.
     */
-    function transferOwnershipFrom(address _pendingOwner) public {
+    function transferOwnershipFrom(address pendingOwner) public {
         require(allowance(msg.sender));
-        pendingOwner = _pendingOwner;
-        emit PendingTransfer(owner, pendingOwner);
+        _pendingOwner = pendingOwner;
+        emit PendingTransfer(_owner, _pendingOwner);
     }
 
     /**
     * @dev Allows the pendingOwner address to finalize the transfer.
     */
     function claimOwnership() onlyPendingOwner public {
-        owner = pendingOwner;
-        owners.push(owner);
-        pendingOwner = address(0);
-        emit OwnershipTransferred(owner, pendingOwner);
+        _owner = _pendingOwner;
+        _owners.push(_owner);
+        _pendingOwner = address(0);
+        emit OwnershipTransferred(_owner, _pendingOwner);
     }
 
     /**
     * @dev Approve the passed address to transfer the Asset on behalf of msg.sender.
-    * @param _trustee The address which will spend the funds.
+    * @param trustee The address which will spend the funds.
     */
-    function approve(address _trustee) onlyOwner public returns (bool) {
-        allowed[msg.sender][_trustee] = true;
-        emit Approval(msg.sender, _trustee);
+    function approve(address trustee) onlyOwner public returns (bool) {
+        allowed[msg.sender][trustee] = true;
+        emit Approval(msg.sender, trustee);
         return true;
     }
 
     /**
     * @dev Approve the passed address to transfer the Asset on behalf of msg.sender.
-    * @param _trustee The address which will spend the funds.
+    * @param trustee The address which will spend the funds.
     */
-    function removeApproval(address _trustee) onlyOwner public returns (bool) {
-        allowed[msg.sender][_trustee] = false;
-        emit RemovedApproval(msg.sender, _trustee);
+    function removeApproval(address trustee) onlyOwner public returns (bool) {
+        allowed[msg.sender][trustee] = false;
+        emit RemovedApproval(msg.sender, trustee);
         return true;
     }
 
     /**
     * @dev Function to check if a trustee is allowed to transfer on behalf the owner
-    * @param _trustee address The address which will spend the funds.
+    * @param trustee address The address which will spend the funds.
     * @return A bool specifying if the trustee can still transfer the Asset
     */
-    function allowance(address _trustee) public view returns (bool) {
-        return allowed[owner][_trustee];
+    function allowance(address trustee) public view returns (bool) {
+        return allowed[_owner][trustee];
     }
 }
