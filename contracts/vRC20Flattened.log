@@ -1,0 +1,30 @@
+2019/04/11 18:33:19 pre processing vRC20.sol
+2019/04/11 18:33:19 pre processing Versioned.sol
+2019/04/11 18:33:19 pre processing Ownable.sol
+2019/04/11 18:33:19 pre processing ../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20.sol
+2019/04/11 18:33:19 pre processing ../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol
+2019/04/11 18:33:19 pre processing IVersioned.sol
+2019/04/11 18:33:19 pre processing ../node_modules/openzeppelin-solidity/contracts/token/ERC20/IERC20.sol
+2019/04/11 18:33:19 pre processing ../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol
+2019/04/11 18:33:19 ERC20Detailed.sol remains unresolved
+2019/04/11 18:33:19 vRC20.sol remains unresolved
+2019/04/11 18:33:19 Resolved  IVersioned.sol
+2019/04/11 18:33:19 Resolved  IERC20.sol
+2019/04/11 18:33:19 Resolved  SafeMath.sol
+2019/04/11 18:33:19 Versioned.sol remains unresolved
+2019/04/11 18:33:19 Resolved  Ownable.sol
+2019/04/11 18:33:19 ERC20.sol remains unresolved
+2019/04/11 18:33:19 vRC20.sol remains unresolved
+2019/04/11 18:33:19 Written IVersioned.sol (20) lines
+2019/04/11 18:33:19 Written IERC20.sol (18) lines
+2019/04/11 18:33:19 Written SafeMath.sol (60) lines
+2019/04/11 18:33:19 Resolved  Versioned.sol
+2019/04/11 18:33:19 Written Ownable.sol (156) lines
+2019/04/11 18:33:19 Resolved  ERC20.sol
+2019/04/11 18:33:19 Resolved  ERC20Detailed.sol
+2019/04/11 18:33:19 Written ERC20.sol (174) lines
+2019/04/11 18:33:19 Written ERC20Detailed.sol (33) lines
+2019/04/11 18:33:19 vRC20.sol remains unresolved
+2019/04/11 18:33:19 Written Versioned.sol (40) lines
+2019/04/11 18:33:19 Resolved  vRC20.sol
+2019/04/11 18:33:19 Written vRC20.sol (20) lines

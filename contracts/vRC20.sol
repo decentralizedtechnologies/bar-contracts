@@ -13,10 +13,13 @@ import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20Detaile
 contract vRC20 is ERC20, ERC20Detailed, Versioned, Ownable {
 
     constructor (
+        uint256 supply,
         string memory name,
         string memory symbol,
         uint8 decimals
-    ) public ERC20Detailed (name, symbol, decimals) {}
+    ) public ERC20Detailed (name, symbol, decimals) {
+        _mint(msg.sender, supply);
+    }
 
     /**
     * @dev Add data to the _data array
